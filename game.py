@@ -14,6 +14,7 @@ class MyGame(arcade.Window):
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.all_sprites_list.append(self.player_sprite)
+        self.is_motion_stopped: bool = True
 
         self.medal_list = arcade.SpriteList()
         for i in range(50):
@@ -26,7 +27,9 @@ class MyGame(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         output = f'Score: {self.score:02d}'
-        arcade.draw_text(output, 100, 100, arcade.color.WHITE)
+        if self.is_motion_stopped:
+            arcade.draw_text(output, 100, 100, arcade.color.WHITE)
+        self.is_motion_stopped = True
         self.all_sprites_list.draw()
 
     def animate(self, delta_time):
@@ -41,6 +44,7 @@ class MyGame(arcade.Window):
             self.score += 1
 
     def on_mouse_motion(self, x, y, delta_x, delta_y):
+        self.is_motion_stopped = False
         self.player_sprite.center_x = x
         self.player_sprite.center_y = y
 
