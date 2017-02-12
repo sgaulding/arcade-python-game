@@ -1,3 +1,5 @@
+import random
+
 import arcade as arcade
 
 
@@ -13,6 +15,14 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 50
         self.all_sprites_list.append(self.player_sprite)
 
+        self.medal_list = arcade.SpriteList()
+        for i in range(50):
+            medal = arcade.Sprite('images/flat_medal4.png', 0.4)
+            medal.center_x = random.randrange(600)
+            medal.center_y = random.randrange(600)
+            self.all_sprites_list.append(medal)
+            self.medal_list.append(medal)
+
     def on_draw(self):
         arcade.start_render()
         output = f'Score: {self.score:02d}'
@@ -20,10 +30,17 @@ class MyGame(arcade.Window):
         self.all_sprites_list.draw()
 
     def animate(self, delta_time):
-        self.score += 1
         self.all_sprites_list.update()
+        hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite,
+            self.medal_list
+        )
 
-    def on_mouse_motion(self, x, y, deltaX, deltaY):
+        for medal in hit_list:
+            medal.kill()
+            self.score += 1
+
+    def on_mouse_motion(self, x, y, delta_x, delta_y):
         self.player_sprite.center_x = x
         self.player_sprite.center_y = y
 
